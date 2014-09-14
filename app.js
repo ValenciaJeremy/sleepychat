@@ -166,8 +166,8 @@ io.on('connection', function(socket)
 							good = false;
 						else if(user.type === "hypnosis" && potentialPartner.type === "roleplaying")
 							good = false;
-						else if(user.type === "general" && potentialPartner.type != "general")
-							good = false;
+						else if(user.type === "general" && potentialPartner.type === "general" || user.type === "general" && potentialPartner.type === "roleplaying" || user.type === "general" && potentialPartner.type === "hypnosis")
+							good = true;
 						else
 						{
 							if(potentialPartner.chatwith === "males" && user.gender != "male")
@@ -180,8 +180,8 @@ io.on('connection', function(socket)
 									good = false;
 								else if(potentialPartner.type === "hypnosis" && user.type === "roleplaying")
 									good = false;
-								else if(potentialPartner.type === "general" && user.type != "general")
-									good = false;
+								else if(user.type === "general" && potentialPartner.type === "general" || user.type === "general" && potentialPartner.type === "roleplaying" || user.type === "general" && potentialPartner.type === "hypnosis")
+									good = true;
 								else
 								{
 									if(user.role === "tist" && potentialPartner.role === "tist")
