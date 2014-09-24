@@ -389,6 +389,43 @@ io.on('connection', function(socket)
 					}
 				}
 			}
+			else if(message.lastIndexOf('/grouproom ', 0) === 0)
+			{
+				socket.emit('chat message', alterForCommands(message, nick));
+					var roomfound = null;
+					for(var z = 0; z < getUsers(users); z++)
+					{
+						var userWanted = users[z];
+						for(var x = 0; x < privaterooms.length; x++)
+						{
+							for(var y = 0; y < privaterooms[x].users.length; y++)
+							{
+								roomfound = privaterooms[x];
+							}
+						if(roomfound)
+						{
+							socket.emit('information', "[INFO] Joining " + userWanted.nick + "'s room...");
+							socket.emit('openroom', { roomtoken: roomfound.token, usertoken: user.token });
+						}
+						else
+						{
+							var hasher = crypto.createHash('sha1');
+							hasher.update(user.nick + userWanted.nick + new Date().getTime() + "IAmA Pepper AMA" + secret);
+							var newroom =
+							{
+								users: [user, userWanted],
+								token: hasher.digest('hex'),
+								lastchat: new Date().getTime()
+							};
+							privaterooms.push(newroom);
+							userWanted.socket.emit('information', "[INFO] " + nick + " would like to chat with you in a group!");
+							userWanted.socket.emit('openroom', { roomtoken: newroom.token, usertoken: userWanted.token });
+							socket.emit('information', "[INFO] Request sent to " + userWanted.nick + ".");
+							socket.emit('openroom', { roomtoken: newroom.token, usertoken: user.token });
+						}
+					}
+				}
+			}
 			else if(message.lastIndexOf('/close', 0) === 0 && room)
 			{
 				try
@@ -537,6 +574,7 @@ io.on('connection', function(socket)
 				socket.emit('information', "[INFO] -- /msg &lt;username&gt; &lt;message&gt; -- Sends a message to username that only they can see in chat.");
 				socket.emit('information', "[INFO] -- /r OR /reply &lt;message&gt; -- Replies to the last person to PM you.");
 				socket.emit('information', "[INFO] -- /room &lt;user&gt; -- Requests a private chat with the specified user.");
+				socket.emit('information', "[INFO] -- /grouproom -- Requests a private chat with all users.");
 				socket.emit('information', "[INFO] -- /whois &lt;user&gt; -- Display sex and role information for a user.");
 				socket.emit('information', "[INFO] ~~~");
 			}
