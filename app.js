@@ -420,10 +420,10 @@ io.on('connection', function(socket)
 							privaterooms.push(newroom);
 							userWanted.socket.emit('information', "[INFO] " + nick + " would like to chat with you in a group!");
 							userWanted.socket.emit('openroom', { roomtoken: newroom.token, usertoken: userWanted.token });
-							socket.emit('information', "[INFO] Request sent to " + userWanted.nick + ".");
 							socket.emit('openroom', { roomtoken: newroom.token, usertoken: user.token });
 						}
 					}
+				socket.emit('information', "[INFO] Request sent to everyone.");
 				}
 			}
 			else if(message.lastIndexOf('/close', 0) === 0 && room)
